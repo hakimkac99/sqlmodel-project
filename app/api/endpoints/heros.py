@@ -23,7 +23,7 @@ def read_heroes(session: Session = Depends(get_session)):
 
 
 @router.patch("/heroes/{hero_id}", response_model=HeroRead)
-def update_hero(
+def update_heroe(
     *, session: Session = Depends(get_session), hero_id: int, hero: HeroUpdate
 ):
     print(hero_id)
