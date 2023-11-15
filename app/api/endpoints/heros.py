@@ -34,7 +34,7 @@ def update_hero(
     return hero
 
 
-@router.delete("/heroes/{hero_id}, response_model=HeroRead")
+@router.delete("/heroes/{hero_id}", response_model=HeroRead)
 def delete_hero(*, session: Session = Depends(get_session), hero_id: int):
     db_hero = crud.hero.read_by_id(session=session, id=hero_id)
     if not db_hero:
