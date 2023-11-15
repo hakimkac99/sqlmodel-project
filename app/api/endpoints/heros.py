@@ -5,7 +5,7 @@ from sqlmodel import Session
 
 from app import crud
 from app.db import get_session
-from app.models.hero import *
+from app.models.hero import HeroCreate, HeroRead, HeroUpdate
 
 router = APIRouter()
 
@@ -23,9 +23,7 @@ def read_heroes(session: Session = Depends(get_session)):
 
 
 @router.patch("/heroes/{hero_id}", response_model=HeroRead)
-def update_hero(
-    *, session: Session = Depends(get_session), hero_id: int, hero: HeroUpdate
-):
+def update_hero(*, session: Session = Depends(get_session), hero_id: int, hero: HeroUpdate):
     print(hero_id)
     db_hero = crud.hero.read_by_id(session=session, id=hero_id)
     if not db_hero:
@@ -39,5 +37,5 @@ def delete_hero(*, session: Session = Depends(get_session), hero_id: int):
     db_hero = crud.hero.read_by_id(session=session, id=hero_id)
     if not db_hero:
         raise HTTPException(status_code=404, detail="Hero not found")
-    hero = crud.hero.delte(session=session, id=hero_id)
+    crud.hero.delete(session=session, id=hero_id)
     return {"ok": True}

@@ -6,7 +6,6 @@ from sqlmodel import SQLModel
 from app import db
 
 from .api.api import api_router
-from .models import *
 
 
 def create_db_and_tables():

@@ -9,9 +9,7 @@ CreateSchemaType = TypeVar("CreateSchemaType", bound=SQLModel)
 UpdateSchemaType = TypeVar("UpdateSchemaType", bound=SQLModel)
 
 
-class CRUDBase(
-    Generic[TableModelType, ReadSchemaType, CreateSchemaType, UpdateSchemaType]
-):
+class CRUDBase(Generic[TableModelType, ReadSchemaType, CreateSchemaType, UpdateSchemaType]):
     def __init__(self, model: Type[TableModelType]):
         """
         CRUD object with default methods to Create, Read, Update, Delete (CRUD).
@@ -21,9 +19,7 @@ class CRUDBase(
     def read_by_id(self, session: Session, id: Any) -> Optional[ReadSchemaType]:
         return session.get(self.model, id)
 
-    def read_multi(
-        self, session: Session, *, skip: int = 0, limit: int = 100
-    ) -> List[ReadSchemaType]:
+    def read_multi(self, session: Session, *, skip: int = 0, limit: int = 100) -> List[ReadSchemaType]:
         statement = select(self.model).offset(skip).limit(limit)
         return session.exec(statement).all()
 
@@ -36,11 +32,7 @@ class CRUDBase(
         return db_obj
 
     def update(
-        self,
-        session: Session,
-        *,
-        db_obj: ReadSchemaType,
-        obj_in: Union[UpdateSchemaType, Dict[str, Any]]
+        self, session: Session, *, db_obj: ReadSchemaType, obj_in: Union[UpdateSchemaType, Dict[str, Any]]
     ) -> ReadSchemaType:
         if isinstance(obj_in, dict):
             update_data = obj_in
@@ -55,7 +47,7 @@ class CRUDBase(
         session.refresh(db_obj)
         return db_obj
 
-    def delte(self, session: Session, *, id: int) -> ReadSchemaType:
+    def delete(self, session: Session, *, id: int) -> ReadSchemaType:
         obj = session.get(self.model, id)
         session.delete(obj)
         session.commit()
