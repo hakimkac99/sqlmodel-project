@@ -1,4 +1,4 @@
-from app.models import Hero, HeroCreate, HeroRead, HeroUpdate
+from app.models.hero import Hero, HeroCreate, HeroRead, HeroUpdate
 
 from .base import CRUDBase
 

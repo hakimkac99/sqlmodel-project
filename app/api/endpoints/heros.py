@@ -5,7 +5,7 @@ from sqlmodel import Session
 
 from app import crud
 from app.db import get_session
-from app.models import *
+from app.models.hero import *
 
 router = APIRouter()
 
