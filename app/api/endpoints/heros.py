@@ -6,6 +6,7 @@ from sqlmodel import Session
 from app import crud
 from app.db import get_session
 from app.models.hero import HeroCreate, HeroRead, HeroUpdate
+from app.models.team_hero_ import HeroReadWithTeam
 
 router = APIRouter()
 
@@ -16,7 +17,7 @@ def create_hero(*, session: Session = Depends(get_session), hero: HeroCreate):
     return db_hero
 
 
-@router.get("/heroes/", response_model=List[HeroRead])
+@router.get("/heroes/", response_model=List[HeroReadWithTeam])
 def read_heroes(
     *,
     session: Session = Depends(get_session),
@@ -25,6 +26,14 @@ def read_heroes(
 ):
     heros = crud.hero.read_multi(session=session, offset=offset, limit=limit)
     return heros
+
+
+@router.get("/heroes/{hero_id}", response_model=HeroReadWithTeam)
+def read_team(*, hero_id: int, session: Session = Depends(get_session)):
+    hero = crud.hero.read_by_id(session=session, id=hero_id)
+    if not hero:
+        raise HTTPException(status_code=404, detail="Hero not found")
+    return hero
 
 
 @router.patch("/heroes/{hero_id}", response_model=HeroRead)

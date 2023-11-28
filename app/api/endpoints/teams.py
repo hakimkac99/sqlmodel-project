@@ -6,6 +6,7 @@ from sqlmodel import Session
 from app import crud
 from app.db import get_session
 from app.models.team import TeamCreate, TeamRead, TeamUpdate
+from app.models.team_hero_ import TeamReadWithHeroes
 
 router = APIRouter()
 
@@ -16,7 +17,7 @@ def create_team(*, session: Session = Depends(get_session), team: TeamCreate):
     return db_team
 
 
-@router.get("/teams/", response_model=List[TeamRead])
+@router.get("/teams/", response_model=List[TeamReadWithHeroes])
 def read_teams(
     *,
     session: Session = Depends(get_session),
@@ -27,7 +28,7 @@ def read_teams(
     return teams
 
 
-@router.get("/teams/{team_id}", response_model=TeamRead)
+@router.get("/teams/{team_id}", response_model=TeamReadWithHeroes)
 def read_team(*, team_id: int, session: Session = Depends(get_session)):
     team = crud.team.read_by_id(session=session, id=team_id)
     if not team:
