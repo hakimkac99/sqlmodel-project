@@ -1,7 +1,8 @@
 from fastapi.testclient import TestClient
 from sqlmodel import Session
 
-from app.models.hero import Hero
+from app import crud
+from app.models.hero import HeroCreate
 
 
 def test_create_hero(client: TestClient):
@@ -16,13 +17,8 @@ def test_create_hero(client: TestClient):
 
 
 def test_delete_hero(session: Session, client: TestClient):
-    hero = Hero(name="Ghani", secret_name="Kac")
-    session.add(hero)
-    session.commit()
+    hero = crud.hero.create(session=session, obj_in=HeroCreate(name="Ghani", secret_name="Kac"))
     response = client.delete(f"/heroes/{hero.id}")
-
     assert response.status_code == 200
-
-    herro_in_db = session.get(Hero, hero.id)
-
+    herro_in_db = crud.hero.read_by_id(session=session, id=hero.id)
     assert herro_in_db is None
