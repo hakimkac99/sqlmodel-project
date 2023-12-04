@@ -23,7 +23,6 @@ class CRUDBase(Generic[TableModelType, ReadSchemaType, CreateSchemaType, UpdateS
         return session.exec(statement).all()
 
     def create(self, session: Session, *, obj_in: CreateSchemaType) -> ReadSchemaType:
-        print(obj_in)
         db_obj = self.model.from_orm(obj_in)
         session.add(db_obj)
         session.commit()
