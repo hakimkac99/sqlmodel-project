@@ -1,6 +1,9 @@
+from typing import TYPE_CHECKING, Optional
+
 from sqlmodel import Field, Relationship, SQLModel
 
-from app.models.team import Team
+if TYPE_CHECKING:
+    from app.models.team import Team, TeamRead
 
 
 class HeroBase(SQLModel):
@@ -12,7 +15,7 @@ class HeroBase(SQLModel):
 
 class Hero(HeroBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    team: Team | None = Relationship(back_populates="heroes")
+    team: Optional["Team"] = Relationship(back_populates="heroes")
 
 
 class HeroCreate(HeroBase):
@@ -28,3 +31,7 @@ class HeroUpdate(SQLModel):
     secret_name: str | None = None
     age: int | None = None
     team_id: int | None = None
+
+
+class HeroReadWithTeam(HeroRead):
+    team: Optional["TeamRead"] = None
