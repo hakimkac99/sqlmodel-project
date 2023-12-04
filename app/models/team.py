@@ -1,6 +1,9 @@
-from typing import List
+from typing import TYPE_CHECKING, List
 
 from sqlmodel import Field, Relationship, SQLModel
+
+if TYPE_CHECKING:
+    from app.models.hero import Hero, HeroRead
 
 
 class TeamBase(SQLModel):
@@ -24,3 +27,7 @@ class TeamRead(TeamBase):
 class TeamUpdate(SQLModel):
     name: str | None = None
     headquarters: str | None = None
+
+
+class TeamReadWithHeroes(TeamRead):
+    heroes: List["HeroRead"] = []

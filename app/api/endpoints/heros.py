@@ -5,8 +5,10 @@ from sqlmodel import Session
 
 from app import crud
 from app.db import get_session
-from app.models.hero import HeroCreate, HeroRead, HeroUpdate
-from app.models.team_hero_ import HeroReadWithTeam
+from app.models.hero import HeroCreate, HeroRead, HeroReadWithTeam, HeroUpdate
+from app.models.team import TeamRead
+
+HeroReadWithTeam.update_forward_refs(TeamRead=TeamRead)
 
 router = APIRouter()
 
