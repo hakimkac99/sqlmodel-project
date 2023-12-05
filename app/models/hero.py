@@ -7,8 +7,8 @@ if TYPE_CHECKING:
 
 
 class HeroBase(SQLModel):
-    name: str = Field(index=True)
-    secret_name: str
+    first_name: str = Field(index=True)
+    last_name: str = Field(index=True)
     age: int | None
     team_id: int | None = Field(default=None, foreign_key="team.id")
 
@@ -27,8 +27,8 @@ class HeroRead(HeroBase):
 
 
 class HeroUpdate(SQLModel):
-    name: str | None = None
-    secret_name: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
     age: int | None = None
     team_id: int | None = None
 
