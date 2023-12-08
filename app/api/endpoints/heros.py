@@ -31,7 +31,7 @@ def read_heroes(
 
 
 @router.get("/heroes/{hero_id}", response_model=HeroReadWithTeam)
-def read_team(*, hero_id: int, session: Session = Depends(get_session)):
+def read_hero(*, hero_id: int, session: Session = Depends(get_session)):
     hero = crud.hero.read_by_id(session=session, id=hero_id)
     if not hero:
         raise HTTPException(status_code=404, detail="Hero not found")

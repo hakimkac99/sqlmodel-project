@@ -1,6 +1,9 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from sqlmodel import Field, Relationship, SQLModel
+
+from app.models.ability import Ability
+from app.models.link_models import HeroAbilityLink
 
 if TYPE_CHECKING:
     from app.models.team import Team, TeamRead
@@ -16,6 +19,7 @@ class HeroBase(SQLModel):
 class Hero(HeroBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     team: Optional["Team"] = Relationship(back_populates="heroes")
+    abilities: List["Ability"] = Relationship(back_populates="heroes", link_model=HeroAbilityLink)
 
 
 class HeroCreate(HeroBase):
