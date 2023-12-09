@@ -15,22 +15,22 @@ class CRUDBase(Generic[TableModelType, ReadSchemaType, CreateSchemaType, UpdateS
         """
         self.model = model
 
-    def read_by_id(self, session: Session, id: Any) -> Optional[ReadSchemaType]:
-        print(id)
-        return session.get(self.model, id)
+    async def read_by_id(self, session: Session, id: Any) -> Optional[ReadSchemaType]:
+        return await session.get(self.model, id)
 
-    def read_multi(self, session: Session, *, offset: int = 0, limit: int = 100) -> List[ReadSchemaType]:
+    async def read_multi(self, session: Session, *, offset: int = 0, limit: int = 100) -> List[ReadSchemaType]:
         statement = select(self.model).offset(offset).limit(limit)
-        return session.exec(statement).all()
+        result = await session.exec(statement)
+        return result.all()
 
-    def create(self, session: Session, *, obj_in: CreateSchemaType) -> ReadSchemaType:
+    async def create(self, session: Session, *, obj_in: CreateSchemaType) -> ReadSchemaType:
         db_obj = self.model.from_orm(obj_in)
         session.add(db_obj)
-        session.commit()
-        session.refresh(db_obj)
+        await session.commit()
+        await session.refresh(db_obj)
         return db_obj
 
-    def update(
+    async def update(
         self, session: Session, *, db_obj: ReadSchemaType, obj_in: Union[UpdateSchemaType, Dict[str, Any]]
     ) -> ReadSchemaType:
         if isinstance(obj_in, dict):
@@ -41,12 +41,12 @@ class CRUDBase(Generic[TableModelType, ReadSchemaType, CreateSchemaType, UpdateS
             setattr(db_obj, key, value)
 
         session.add(db_obj)
-        session.commit()
-        session.refresh(db_obj)
+        await session.commit()
+        await session.refresh(db_obj)
         return db_obj
 
-    def delete(self, session: Session, *, id: int) -> ReadSchemaType:
-        db_obj = session.get(self.model, id)
-        session.delete(db_obj)
-        session.commit()
+    async def delete(self, session: Session, *, id: int) -> ReadSchemaType:
+        db_obj = await session.get(self.model, id)
+        await session.delete(db_obj)
+        await session.commit()
         return db_obj

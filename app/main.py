@@ -1,21 +1,16 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from sqlmodel import SQLModel
 
-from app import db
+from app.db import create_db_and_tables
 
 from .api.api import api_router
-
-
-def create_db_and_tables():
-    SQLModel.metadata.create_all(db.engine)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # startup
-    create_db_and_tables()
+    await create_db_and_tables()
     yield
     # shutdown
     # ...
