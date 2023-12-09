@@ -64,12 +64,26 @@ def get_hero_abilities(*, session: Session = Depends(get_session), hero_id: int)
 
 
 @router.post("/hero-abilities", response_model=HeroAbilityLinkData)
-def create_hero_ability(*, session: Session = Depends(get_session), hero: HeroAbilityLinkData):
-    db_hero_ability = crud.hero_ability_link.create(session=session, obj_in=hero)
+def create_hero_ability(*, session: Session = Depends(get_session), hero_ability_data: HeroAbilityLinkData):
+    db_hero_ability = crud.hero_ability_link.create(session=session, obj_in=hero_ability_data)
     return db_hero_ability
 
 
-@router.delete("/heroes/{hero_id}/ability/{ability_id}")
+@router.put("/hero-abilities", response_model=HeroAbilityLinkData)
+def update_hero_abilitie(*, session: Session = Depends(get_session), hero_ability_data: HeroAbilityLinkData):
+    db_hero_ability = crud.hero_ability_link.read_by_id(
+        session=session, id=(hero_ability_data.hero_id, hero_ability_data.ability_id)
+    )
+    if not db_hero_ability:
+        raise HTTPException(status_code=404, detail="Ability is not associated to the given hero")
+
+    updated_hero_ability = crud.hero_ability_link.update(
+        session=session, db_obj=db_hero_ability, obj_in=hero_ability_data
+    )
+    return updated_hero_ability
+
+
+@router.delete("/heroes/{hero_id}/abilities/{ability_id}")
 def delete_hero_ability(*, session: Session = Depends(get_session), hero_id: int, ability_id: int):
     db_hero_ability = crud.hero_ability_link.read_by_id(session=session, id=(hero_id, ability_id))
     if not db_hero_ability:
