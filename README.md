@@ -2,7 +2,7 @@
 
 This is a demo app : FastAPI + SQLModel
 
-# Run the app using PostgreSQL + pgAdmin
+### Run the app using PostgreSQL + pgAdmin
 
 - Update app/db.py file (uncomment the posgresql config) then run :
 
@@ -18,15 +18,15 @@ This is a demo app : FastAPI + SQLModel
 
 - Access to the app docs : `http://localhost:8000/docs`
 
-# Run the app using sqllite
+### Run the app using sqllite
 
 - Simply run `uvicorn app.main:app --reload`
 
-# Running tests (in memory)
+### Running tests (in memory)
 
 - pytest app
 
-# Running Alembig migration
+### Running Alembig migration
 
 - generate migrations : `alembic revision --autogenerate -m "revision name"`
 - upgrade to the new revision : `alembic upgrade <revision>`
