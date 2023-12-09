@@ -16,6 +16,7 @@ class CRUDBase(Generic[TableModelType, ReadSchemaType, CreateSchemaType, UpdateS
         self.model = model
 
     def read_by_id(self, session: Session, id: Any) -> Optional[ReadSchemaType]:
+        print(id)
         return session.get(self.model, id)
 
     def read_multi(self, session: Session, *, offset: int = 0, limit: int = 100) -> List[ReadSchemaType]:

@@ -1,11 +1,12 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session
+from sqlmodel import Session, select
 
 from app import crud
 from app.db import get_session
 from app.models.hero import HeroCreate, HeroRead, HeroReadWithTeam, HeroUpdate
+from app.models.link_models import HeroAbilityLink, HeroAbilityLinkData
 from app.models.team import TeamRead
 
 HeroReadWithTeam.update_forward_refs(TeamRead=TeamRead)
@@ -53,4 +54,25 @@ def delete_hero(*, session: Session = Depends(get_session), hero_id: int):
     if not db_hero:
         raise HTTPException(status_code=404, detail="Hero not found")
     crud.hero.delete(session=session, id=hero_id)
+    return {"ok": True}
+
+
+@router.get("/hero/{hero_id}/abilities", response_model=List[HeroAbilityLinkData])
+def get_hero_abilities(*, session: Session = Depends(get_session), hero_id: int):
+    statement = select(HeroAbilityLink).where(HeroAbilityLink.hero_id == hero_id)
+    return session.exec(statement).all()
+
+
+@router.post("/hero-abilities", response_model=HeroAbilityLinkData)
+def create_hero_ability(*, session: Session = Depends(get_session), hero: HeroAbilityLinkData):
+    db_hero_ability = crud.hero_ability_link.create(session=session, obj_in=hero)
+    return db_hero_ability
+
+
+@router.delete("/heroes/{hero_id}/ability/{ability_id}")
+def delete_hero_ability(*, session: Session = Depends(get_session), hero_id: int, ability_id: int):
+    db_hero_ability = crud.hero_ability_link.read_by_id(session=session, id=(hero_id, ability_id))
+    if not db_hero_ability:
+        raise HTTPException(status_code=404, detail="Ability is not associated to the given hero")
+    crud.hero_ability_link.delete(session=session, id=(hero_id, ability_id))
     return {"ok": True}
