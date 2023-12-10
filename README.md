@@ -26,7 +26,7 @@ This is a demo app : FastAPI + SQLModel
 
 - pytest app
 
-### Running Alembig migration
+### Running Alembic migrations
 
 - generate migrations : `alembic revision --autogenerate -m "revision name"`
 - upgrade to the new revision : `alembic upgrade <revision>`
