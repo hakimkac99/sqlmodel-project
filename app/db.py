@@ -8,9 +8,9 @@ sqlite_file_name = "database.db"
 sqlite_url = f"sqlite+aiosqlite:///{sqlite_file_name}"
 engine = create_async_engine(sqlite_url, echo=True, future=True)
 
-# Using postgresql
-# DATABASE_URL = os.environ.get("DATABASE_URL")
-# engine = create_async_engine(sqlite_url, echo=True, future=True)
+# Using PostgreSQL
+# postgresql_url = os.environ.get("DATABASE_URL")
+# engine = create_async_engine(postgresql_url, echo=True, future=True)
 
 
 async def create_db_and_tables():
