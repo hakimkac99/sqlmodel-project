@@ -6,7 +6,11 @@ from sqlmodel import Session, select
 from app import crud
 from app.db import get_session
 from app.models.hero import HeroCreate, HeroRead, HeroReadWithTeam, HeroUpdate
-from app.models.link_models import HeroAbilityLink, HeroAbilityLinkData
+from app.models.link_models import (
+    HeroAbilityBase,
+    HeroAbilityCreateUpdate,
+    HeroAbilityLink,
+)
 from app.models.team import TeamRead
 
 HeroReadWithTeam.update_forward_refs(TeamRead=TeamRead)
@@ -57,20 +61,21 @@ async def delete_hero(*, session: Session = Depends(get_session), hero_id: int):
     return {"ok": True}
 
 
-@router.get("/heros/{hero_id}/abilities", response_model=List[HeroAbilityLinkData])
+@router.get("/heros/{hero_id}/abilities", response_model=List[HeroAbilityBase])
 async def get_hero_abilities(*, session: Session = Depends(get_session), hero_id: int):
     statement = select(HeroAbilityLink).where(HeroAbilityLink.hero_id == hero_id)
-    return await session.exec(statement).all()
+    reslut = await session.exec(statement)
+    return reslut.all()
 
 
-@router.post("/hero-abilities", response_model=HeroAbilityLinkData)
-async def create_hero_ability(*, session: Session = Depends(get_session), hero_ability_data: HeroAbilityLinkData):
+@router.post("/hero-abilities", response_model=HeroAbilityBase)
+async def create_hero_ability(*, session: Session = Depends(get_session), hero_ability_data: HeroAbilityCreateUpdate):
     db_hero_ability = await crud.hero_ability_link.create(session=session, obj_in=hero_ability_data)
     return db_hero_ability
 
 
-@router.put("/hero-abilities", response_model=HeroAbilityLinkData)
-async def update_hero_abilitie(*, session: Session = Depends(get_session), hero_ability_data: HeroAbilityLinkData):
+@router.put("/hero-abilities", response_model=HeroAbilityBase)
+async def update_hero_abilitie(*, session: Session = Depends(get_session), hero_ability_data: HeroAbilityCreateUpdate):
     db_hero_ability = await crud.hero_ability_link.read_by_id(
         session=session, id=(hero_ability_data.hero_id, hero_ability_data.ability_id)
     )

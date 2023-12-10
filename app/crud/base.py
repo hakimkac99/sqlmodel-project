@@ -21,7 +21,7 @@ class CRUDBase(Generic[TableModelType, ReadSchemaType, CreateSchemaType, UpdateS
     async def read_multi(self, session: Session, *, offset: int = 0, limit: int = 100) -> List[ReadSchemaType]:
         statement = select(self.model).offset(offset).limit(limit)
         result = await session.exec(statement)
-        return result.all()
+        return result.unique().all()
 
     async def create(self, session: Session, *, obj_in: CreateSchemaType) -> ReadSchemaType:
         db_obj = self.model.from_orm(obj_in)
